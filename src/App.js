@@ -18,15 +18,22 @@ const LinesH = () =>
   Array.from({ length: 100 }, (_, i) => (
     <line key={i} x1={i * 20} y1={0} x2={i * 20} y2={980} {...lineStyle} />
   ));
+
+function useViewbox() {
+  const [state, dispatch] = useStore();
+  const viewbox = state.viewbox;
+  const setViewbox = update =>
+    dispatch(({ viewbox }) => ({ viewbox: update(viewbox) }));
+  return [viewbox, setViewbox];
+}
+
 export default function App() {
   const svgRef = useRef();
 
   const [{ rect, mouse }, handlers] = useCreateRect(svgRef.current);
 
   const [state, dispatch] = useStore();
-  const viewbox = state.viewbox;
-  const setViewbox = update =>
-    dispatch(({ viewbox }) => ({ viewbox: update(viewbox) }));
+  const [viewbox, setViewbox] = useViewbox();
 
   //set viewbox as rect
   useLayoutEffect(() => {
