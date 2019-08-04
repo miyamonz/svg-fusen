@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-const getXY = e => ({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
 const createRect = a => b => {
   const width = Math.abs(a.x - b.x);
   const height = Math.abs(a.y - b.y);
@@ -20,17 +19,16 @@ export default function useCreateRect(targetElement) {
     if (e.target !== targetElement) {
       return;
     }
-    const xy = getXY(e);
-    setRect({ ...xy, width: 0, height: 0 });
-    setMouse(xy);
+    setRect({ ...e.pos, width: 0, height: 0 });
+    setMouse(e.pos);
   };
   const onMouseUp = e => {
     if (!mouse) return;
     setMouse(null);
-    setRect(r(getXY(e)));
+    setRect(r(e.pos));
   };
   const onMouseMove = e => {
-    if (mouse) setRect(r(getXY(e)));
+    if (mouse) setRect(r(e.pos));
   };
 
   return [{ rect, mouse }, { onMouseMove, onMouseUp, onMouseDown }];
