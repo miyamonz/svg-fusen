@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useCreateRect } from "./useCreateShape";
 import Rect from "./Rect";
 

@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useState, useLayoutEffect, useRef } from "react";
 import useStore, { useFuncs } from "./store";
 import useMouseDrag from "./useMouseDrag";
+
 import AddRect from "./AddRect";
+import AddCircle from "./AddCircle";
 
 import useScroll from "./useScroll";
 
@@ -63,6 +65,7 @@ export default function App() {
   //add rect to array
   const [components, setComponents] = useState([]);
   const onAdd = elm => setComponents(prev => [...prev, elm]);
+
   return (
     <>
       <svg viewBox={viewBox} {...handlers}>
@@ -74,6 +77,7 @@ export default function App() {
       </svg>
       <svg ref={svgRef} viewBox={viewBox} {...handlers}>
         {components}
+        <AddCircle {...{ start, end, drag, onAdd }} />
         <AddRect {...{ start, end, drag, onAdd }} />
       </svg>
     </>

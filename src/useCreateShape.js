@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 
-import useMouseDrag from "./useMouseDrag";
-
 const createRect = a => b => {
   const width = Math.abs(a.x - b.x);
   const height = Math.abs(a.y - b.y);
@@ -26,10 +24,9 @@ export function useCreateRect({ start, end, drag }) {
 
   return rect;
 }
-export function useCreateCircle(targetElement) {
+export function useCreateCircle({ start, end, drag }) {
   const [circle, setCircle] = useState({ cx: 0, cy: 0, r: 0 });
 
-  const [{ start, end, drag }, handlers] = useMouseDrag(targetElement);
   useEffect(
     () => {
       if (drag) {
@@ -41,5 +38,5 @@ export function useCreateCircle(targetElement) {
     [start, end, drag]
   );
 
-  return [{ circle, drag }, handlers];
+  return circle;
 }
