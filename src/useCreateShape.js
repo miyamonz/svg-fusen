@@ -27,3 +27,20 @@ export function useCreateRect(targetElement) {
 
   return [{ rect, drag }, handlers];
 }
+export function useCreateCircle(targetElement) {
+  const [circle, setCircle] = useState({ cx: 0, cy: 0, r: 0 });
+
+  const [{ start, end, drag }, handlers] = useMouseDrag(targetElement);
+  useEffect(
+    () => {
+      if (drag) {
+        const r = Math.sqrt((end.x - start.x) ** 2 + (end.y - start.y) ** 2);
+        setCircle({ cx: start.x, cy: start.y, r });
+      }
+      if (!drag) setCircle(null);
+    },
+    [start, end, drag]
+  );
+
+  return [{ circle, drag }, handlers];
+}

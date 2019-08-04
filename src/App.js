@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import useStore, { useFuncs } from "./store";
 
-import { useCreateRect } from "./useCreateShape";
+import { useCreateRect, useCreateCircle } from "./useCreateShape";
 import useScroll from "./useScroll";
 
 import Rect from "./Rect";
@@ -61,13 +61,34 @@ export default function App() {
   const { viewBox } = useFuncs();
 
   //add rect to array
-  const [rects, setRects] = useState([]);
+  const [components, setComponents] = useState([]);
   useEffect(
     () => {
-      if (!drag && rect.width * rect.height !== 0)
-        setRects(prev => [...prev, rect]);
+      if (!drag && rect.width * rect.height !== 0) {
+        const c = <Rect key={JSON.stringify(rect)} {...rect} />;
+        setComponents(prev => [...prev, c]);
+      }
     },
     [drag]
+  );
+
+  const [tmp, setTmp] = useState(null);
+  const [{ circle, drag: dragC }, handlersC] = useCreateCircle(svgRef.current);
+  useEffect(
+    () => {
+      if (dragC) {
+        setTmp(<circle {...circle} fill="lightblue" />);
+      } else {
+        setTmp(null);
+      }
+      if (!dragC && circle && circle.r !== 0) {
+        const c = (
+          <circle key={JSON.stringify(circle)} {...circle} fill="lightgray" />
+        );
+        setComponents(prev => [...prev, c]);
+      }
+    },
+    [dragC, circle]
   );
 
   return (
@@ -79,11 +100,15 @@ export default function App() {
           hello
         </text>
       </svg>
-      <svg ref={svgRef} viewBox={viewBox} {...handlers}>
-        {rects.map(r => (
-          <Rect key={JSON.stringify(r)} {...r} />
-        ))}
+      <svg
+        ref={svgRef}
+        viewBox={viewBox}
+        // {...handlers}
+        {...handlersC}
+      >
+        {components}
         {drag && <rect {...rect} fill="red" />}
+        {dragC && tmp}
       </svg>
     </>
   );
