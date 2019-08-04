@@ -11,14 +11,13 @@ const createRect = a => b => {
   return { x, y, width, height };
 };
 
-export default function useCreateRect() {
+export default function useCreateRect(targetElement) {
   const [rect, setRect] = useState({ x: 0, y: 0, width: 0, height: 90 });
   const [mouse, setMouse] = useState(null);
 
   const r = createRect(mouse);
   const onMouseDown = e => {
-    console.log(e.target.tagName);
-    if (e.target.tagName !== "svg") {
+    if (e.target !== targetElement) {
       return;
     }
     const xy = getXY(e);
