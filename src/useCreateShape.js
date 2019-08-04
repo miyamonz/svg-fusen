@@ -12,10 +12,9 @@ const createRect = a => b => {
   return { x, y, width, height };
 };
 
-export function useCreateRect(targetElement) {
+export function useCreateRect({ start, end, drag }) {
   const [rect, setRect] = useState({ x: 0, y: 0, width: 0, height: 90 });
 
-  const [{ start, end, drag }, handlers] = useMouseDrag(targetElement);
   useEffect(
     () => {
       const toRect = createRect(start);
@@ -25,7 +24,7 @@ export function useCreateRect(targetElement) {
     [start, end, drag]
   );
 
-  return [{ rect, drag }, handlers];
+  return rect;
 }
 export function useCreateCircle(targetElement) {
   const [circle, setCircle] = useState({ cx: 0, cy: 0, r: 0 });

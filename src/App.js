@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import useStore, { useFuncs } from "./store";
+import useMouseDrag from "./useMouseDrag";
+import AddRect from "./AddRect";
 
-import { useCreateRect, useCreateCircle } from "./useCreateShape";
 import useScroll from "./useScroll";
-
-import Rect from "./Rect";
 
 const lineStyle = {
   stroke: "gray",
@@ -30,7 +29,7 @@ function useViewbox() {
 export default function App() {
   const svgRef = useRef();
 
-  const [{ rect, drag }, handlers] = useCreateRect(svgRef.current);
+  const [{ start, end, drag }, handlers] = useMouseDrag(svgRef.current);
 
   const [state, dispatch] = useStore();
   const [viewbox, setViewbox] = useViewbox();
@@ -49,6 +48,7 @@ export default function App() {
     () => {
       const { x, y, width, height } = svgRef.current.getBoundingClientRect();
       const element = { x, y, width, height };
+      console.log(element);
       dispatch(() => ({
         element
       }));
@@ -62,16 +62,7 @@ export default function App() {
 
   //add rect to array
   const [components, setComponents] = useState([]);
-  useEffect(
-    () => {
-      if (!drag && rect.width * rect.height !== 0) {
-        const c = <Rect key={JSON.stringify(rect)} {...rect} />;
-        setComponents(prev => [...prev, c]);
-      }
-    },
-    [drag]
-  );
-
+  const onAdd = elm => setComponents(prev => [...prev, elm]);
   return (
     <>
       <svg viewBox={viewBox} {...handlers}>
@@ -83,7 +74,7 @@ export default function App() {
       </svg>
       <svg ref={svgRef} viewBox={viewBox} {...handlers}>
         {components}
-        {drag && <rect {...rect} fill="red" />}
+        <AddRect {...{ start, end, drag, onAdd }} />
       </svg>
     </>
   );
