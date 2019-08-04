@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
+import useStore from "./store";
 
 import { Provider } from "./eventToSVGPos";
 
@@ -41,13 +42,12 @@ export default function App() {
 
   const [{ rect, mouse }, handlers] = useCreateRect(svgRef.current);
 
-  const [viewbox, setViewbox] = useState({
-    x: 0,
-    y: 0,
-    width: 1,
-    height: 1
-  });
-  useEffect(() => {
+  const [state, dispatch] = useStore();
+  const viewbox = state.viewbox;
+  const setViewbox = update =>
+    dispatch(({ viewbox }) => ({ viewbox: update(viewbox) }));
+
+  useLayoutEffect(() => {
     setViewbox(prev => ({
       ...prev,
       width: svgRef.current.clientWidth,
