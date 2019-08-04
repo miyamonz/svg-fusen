@@ -30,7 +30,7 @@ function useViewbox() {
 export default function App() {
   const svgRef = useRef();
 
-  const [{ rect, mouse }, handlers] = useCreateRect(svgRef.current);
+  const [{ rect, drag }, handlers] = useCreateRect(svgRef.current);
 
   const [state, dispatch] = useStore();
   const [viewbox, setViewbox] = useViewbox();
@@ -64,10 +64,10 @@ export default function App() {
   const [rects, setRects] = useState([]);
   useEffect(
     () => {
-      if (!mouse && rect.width * rect.height !== 0)
+      if (!drag && rect.width * rect.height !== 0)
         setRects(prev => [...prev, rect]);
     },
-    [mouse]
+    [drag]
   );
 
   return (
@@ -83,7 +83,7 @@ export default function App() {
         {rects.map(r => (
           <Rect key={JSON.stringify(r)} {...r} />
         ))}
-        {mouse && <rect {...rect} fill="red" />}
+        {drag && <rect {...rect} fill="red" />}
       </svg>
     </>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useFuncs } from "./store";
+
+import useMouseDrag from "./useMouseDrag";
 
 const createRect = a => b => {
   const width = Math.abs(a.x - b.x);
@@ -13,31 +14,16 @@ const createRect = a => b => {
 
 export default function useCreateRect(targetElement) {
   const [rect, setRect] = useState({ x: 0, y: 0, width: 0, height: 90 });
-  const [mouse, setMouse] = useState(null);
 
-  const r = createRect(mouse);
+  const [{ start, end, drag }, handlers] = useMouseDrag(targetElement);
+  useEffect(
+    () => {
+      const toRect = createRect(start);
+      setRect(toRect(end));
+      if (!drag) setRect(null);
+    },
+    [start, end, drag]
+  );
 
-  const { eventToPos } = useFuncs();
-
-  const onMouseDown = e => {
-    if (e.target !== targetElement) {
-      return;
-    }
-    const pos = eventToPos(e);
-    setRect({ ...pos, width: 0, height: 0 });
-    setMouse(pos);
-  };
-  const onMouseUp = e => {
-    if (!mouse) return;
-    const pos = eventToPos(e);
-
-    setMouse(null);
-    setRect(r(pos));
-  };
-  const onMouseMove = e => {
-    const pos = eventToPos(e);
-    if (mouse) setRect(r(pos));
-  };
-
-  return [{ rect, mouse }, { onMouseMove, onMouseUp, onMouseDown }];
+  return [{ rect, drag }, handlers];
 }
