@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
-import useStore from "./store";
+import useStore, { useFuncs } from "./store";
 
 import { Provider } from "./eventToSVGPos";
 
@@ -7,23 +7,6 @@ import useCreateRect from "./useCreateRect";
 import useScroll from "./useScroll";
 
 import Rect from "./Rect";
-
-// providerの外なのでuseEventToPosできない
-const eventToPos = (viewbox, targetElm) => e => {
-  const ox = e.nativeEvent.offsetX;
-  const oy = e.nativeEvent.offsetY;
-
-  const x = (ox / targetElm.clientWidth) * viewbox.width + viewbox.x;
-  const y = (oy / targetElm.clientHeight) * viewbox.height + viewbox.y;
-  return { x, y };
-};
-
-const eventMiddleware = fn => handlers => {
-  return Object.keys(handlers).reduce((acc, key) => {
-    acc[key] = e => handlers[key]({ ...e, pos: fn(e) });
-    return acc;
-  }, {});
-};
 
 const lineStyle = {
   stroke: "gray",
@@ -47,6 +30,7 @@ export default function App() {
   const setViewbox = update =>
     dispatch(({ viewbox }) => ({ viewbox: update(viewbox) }));
 
+  //set viewbox as rect
   useLayoutEffect(() => {
     setViewbox(prev => ({
       ...prev,
@@ -55,10 +39,21 @@ export default function App() {
     }));
   }, []);
 
+  //update rect of svg
+  useLayoutEffect(
+    () => {
+      const { x, y, width, height } = svgRef.current.getBoundingClientRect();
+      const element = { x, y, width, height };
+      dispatch(() => ({
+        element
+      }));
+    },
+    [svgRef]
+  );
+
   useScroll(svgRef.current, setViewbox);
 
-  const toPos = eventToPos(viewbox, svgRef.current);
-  const _handlers = eventMiddleware(toPos)(handlers);
+  const { viewBox } = useFuncs();
 
   //add rect to array
   const [rects, setRects] = useState([]);
@@ -72,21 +67,14 @@ export default function App() {
 
   return (
     <Provider target={svgRef.current} viewbox={viewbox}>
-      <svg
-        viewBox={`${viewbox.x} ${viewbox.y} ${viewbox.width} ${viewbox.height}`}
-        {..._handlers}
-      >
+      <svg viewBox={viewBox} {...handlers}>
         <LinesV />
         <LinesH />
         <text x={100} y={100}>
           hello
         </text>
       </svg>
-      <svg
-        ref={svgRef}
-        viewBox={`${viewbox.x} ${viewbox.y} ${viewbox.width} ${viewbox.height}`}
-        {..._handlers}
-      >
+      <svg ref={svgRef} viewBox={viewBox} {...handlers}>
         {rects.map(r => (
           <Rect key={JSON.stringify(r)} {...r} />
         ))}

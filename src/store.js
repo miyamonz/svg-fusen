@@ -21,3 +21,22 @@ const Provider = ({ children }) => {
 
 export { Store, Provider };
 export default () => useContext(Store);
+
+export function useFuncs() {
+  const [state, dispatch] = useContext(Store);
+  const { viewbox, element } = state;
+
+  const eventToPos = e => {
+    const ox = e.nativeEvent.offsetX;
+    const oy = e.nativeEvent.offsetY;
+
+    const x = (ox / element.width) * viewbox.width + viewbox.x;
+    const y = (oy / element.height) * viewbox.height + viewbox.y;
+    return { x, y };
+  };
+
+  const viewBox = `${viewbox.x} ${viewbox.y} ${viewbox.width} ${
+    viewbox.height
+  }`;
+  return { eventToPos, viewBox };
+}

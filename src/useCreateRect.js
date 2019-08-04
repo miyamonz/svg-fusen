@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useFuncs } from "./store";
 
 const createRect = a => b => {
   const width = Math.abs(a.x - b.x);
@@ -15,20 +16,27 @@ export default function useCreateRect(targetElement) {
   const [mouse, setMouse] = useState(null);
 
   const r = createRect(mouse);
+
+  const { eventToPos } = useFuncs();
+
   const onMouseDown = e => {
     if (e.target !== targetElement) {
       return;
     }
-    setRect({ ...e.pos, width: 0, height: 0 });
-    setMouse(e.pos);
+    const pos = eventToPos(e);
+    setRect({ ...pos, width: 0, height: 0 });
+    setMouse(pos);
   };
   const onMouseUp = e => {
     if (!mouse) return;
+    const pos = eventToPos(e);
+
     setMouse(null);
-    setRect(r(e.pos));
+    setRect(r(pos));
   };
   const onMouseMove = e => {
-    if (mouse) setRect(r(e.pos));
+    const pos = eventToPos(e);
+    if (mouse) setRect(r(pos));
   };
 
   return [{ rect, mouse }, { onMouseMove, onMouseUp, onMouseDown }];
