@@ -72,25 +72,6 @@ export default function App() {
     [drag]
   );
 
-  const [tmp, setTmp] = useState(null);
-  const [{ circle, drag: dragC }, handlersC] = useCreateCircle(svgRef.current);
-  useEffect(
-    () => {
-      if (dragC) {
-        setTmp(<circle {...circle} fill="lightblue" />);
-      } else {
-        setTmp(null);
-      }
-      if (!dragC && circle && circle.r !== 0) {
-        const c = (
-          <circle key={JSON.stringify(circle)} {...circle} fill="lightgray" />
-        );
-        setComponents(prev => [...prev, c]);
-      }
-    },
-    [dragC, circle]
-  );
-
   return (
     <>
       <svg viewBox={viewBox} {...handlers}>
@@ -100,15 +81,9 @@ export default function App() {
           hello
         </text>
       </svg>
-      <svg
-        ref={svgRef}
-        viewBox={viewBox}
-        // {...handlers}
-        {...handlersC}
-      >
+      <svg ref={svgRef} viewBox={viewBox} {...handlers}>
         {components}
         {drag && <rect {...rect} fill="red" />}
-        {dragC && tmp}
       </svg>
     </>
   );
