@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+
+import { Provider } from "./eventToSVGPos";
+
 import useCreateRect from "./useCreateRect";
 import useScroll from "./useScroll";
 
 import Rect from "./Rect";
 
+// providerの外なのでuseEventToPosできない
 const eventToPos = (viewbox, targetElm) => e => {
   const ox = e.nativeEvent.offsetX;
   const oy = e.nativeEvent.offsetY;
@@ -67,7 +71,7 @@ export default function App() {
   );
 
   return (
-    <>
+    <Provider target={svgRef.current} viewbox={viewbox}>
       <svg
         viewBox={`${viewbox.x} ${viewbox.y} ${viewbox.width} ${viewbox.height}`}
         {..._handlers}
@@ -88,6 +92,6 @@ export default function App() {
         ))}
         {mouse && <rect {...rect} fill="red" />}
       </svg>
-    </>
+    </Provider>
   );
 }
