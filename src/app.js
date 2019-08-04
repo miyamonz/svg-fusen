@@ -19,6 +19,19 @@ const eventMiddleware = fn => handlers => {
     return acc;
   }, {});
 };
+
+const lineStyle = {
+  stroke: "gray",
+  strokeWidth: 0.4
+};
+const LinesV = () =>
+  Array.from({ length: 100 }, (_, i) => (
+    <line key={i} x1={0} y1={i * 20} x2={1200} y2={i * 20} {...lineStyle} />
+  ));
+const LinesH = () =>
+  Array.from({ length: 100 }, (_, i) => (
+    <line key={i} x1={i * 20} y1={0} x2={i * 20} y2={980} {...lineStyle} />
+  ));
 export default function App() {
   const svgRef = useRef();
 
@@ -61,6 +74,8 @@ export default function App() {
       viewBox={`${viewbox.x} ${viewbox.y} ${viewbox.width} ${viewbox.height}`}
       {..._handlers}
     >
+      <LinesV />
+      <LinesH />
       <text x={100} y={100}>
         hello
       </text>
