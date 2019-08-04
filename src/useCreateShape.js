@@ -12,7 +12,7 @@ const createRect = a => b => {
   return { x, y, width, height };
 };
 
-export default function useCreateRect(targetElement) {
+export function useCreateRect(targetElement) {
   const [rect, setRect] = useState({ x: 0, y: 0, width: 0, height: 90 });
 
   const [{ start, end, drag }, handlers] = useMouseDrag(targetElement);

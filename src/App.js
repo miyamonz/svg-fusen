@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import useStore, { useFuncs } from "./store";
 
-import useCreateRect from "./useCreateRect";
+import { useCreateRect } from "./useCreateShape";
 import useScroll from "./useScroll";
 
 import Rect from "./Rect";
