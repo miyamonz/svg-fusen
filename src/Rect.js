@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useEventToPos } from "./eventToSVGPos";
+import { useFuncs } from "./store";
 
 export default function Rect(rectData) {
+  const { eventToPos } = useFuncs();
+
   const [color, setColor] = useState("lightgray");
   const [click, setClick] = useState(null);
 
   const [rect, setRect] = useState(rectData);
 
-  const toPos = useEventToPos();
   const onMouseDown = e => {
     setColor("yellow");
-    const pos = toPos(e);
+    const pos = eventToPos(e);
     const x = pos.x - rect.x;
     const y = pos.y - rect.y;
 
@@ -22,7 +23,7 @@ export default function Rect(rectData) {
   };
   const onMouseMove = e => {
     if (click) {
-      const pos = toPos(e);
+      const pos = eventToPos(e);
       const x = pos.x - click.x;
       const y = pos.y - click.y;
       setRect(prev => ({ ...prev, x, y }));

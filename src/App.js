@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import useStore, { useFuncs } from "./store";
 
-import { Provider } from "./eventToSVGPos";
-
 import useCreateRect from "./useCreateRect";
 import useScroll from "./useScroll";
 
@@ -66,7 +64,7 @@ export default function App() {
   );
 
   return (
-    <Provider target={svgRef.current} viewbox={viewbox}>
+    <>
       <svg viewBox={viewBox} {...handlers}>
         <LinesV />
         <LinesH />
@@ -80,6 +78,6 @@ export default function App() {
         ))}
         {mouse && <rect {...rect} fill="red" />}
       </svg>
-    </Provider>
+    </>
   );
 }
