@@ -67,22 +67,27 @@ export default function App() {
   );
 
   return (
-    <svg
-      ref={svgRef}
-      width="100%"
-      height="100%"
-      viewBox={`${viewbox.x} ${viewbox.y} ${viewbox.width} ${viewbox.height}`}
-      {..._handlers}
-    >
-      <LinesV />
-      <LinesH />
-      <text x={100} y={100}>
-        hello
-      </text>
-      {rects.map(r => (
-        <Rect key={JSON.stringify(r)} {...r} />
-      ))}
-      {mouse && <rect {...rect} fill="red" />}
-    </svg>
+    <>
+      <svg
+        viewBox={`${viewbox.x} ${viewbox.y} ${viewbox.width} ${viewbox.height}`}
+        {..._handlers}
+      >
+        <LinesV />
+        <LinesH />
+        <text x={100} y={100}>
+          hello
+        </text>
+      </svg>
+      <svg
+        ref={svgRef}
+        viewBox={`${viewbox.x} ${viewbox.y} ${viewbox.width} ${viewbox.height}`}
+        {..._handlers}
+      >
+        {rects.map(r => (
+          <Rect key={JSON.stringify(r)} {...r} />
+        ))}
+        {mouse && <rect {...rect} fill="red" />}
+      </svg>
+    </>
   );
 }
